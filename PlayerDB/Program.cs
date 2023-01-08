@@ -18,10 +18,16 @@ namespace PlayerDB
 			Player player = new Player();
 			DataBase db = new DataBase();
 
+			string choice;
+
 			while (Console.ReadKey().Key!=ConsoleKey.Spacebar)
 			{
-				Console.WriteLine(" 1 - Добавить игрока\n 2 - удалить игрока\n 3 - показать игроков\n 4 - забанить/разбанить игрока по id\n 5 - Информация об игроке \n Для выхода нажмите Space");
-				string choice;
+				Console.WriteLine(" 1 - Добавить игрока\n " +
+					"2 - удалить игрока\n " +
+					"3 - показать игроков\n " +
+					"4 - забанить/разбанить игрока по id\n " +
+					"5 - Информация об игроке \n Для выхода нажмите Space");
+
 				switch (choice = Console.ReadLine())
 				{
 					case "1":
@@ -42,6 +48,7 @@ namespace PlayerDB
 					default:
 						break;
 				}
+
 				Console.ReadKey();
 				Console.Clear();
 			}
@@ -129,9 +136,9 @@ namespace PlayerDB
 
 	public class Player
 	{
-		public int Id { get;  set; }
-		public string Name { get;  set; }
-		public int Lvl { get;  set; }
+		public int Id { get; set; }
+		public string Name { get; set; }
+		public int Lvl { get; set; }
 		public bool Banned { get; set; }
 
 		public void ShowInfo()
