@@ -46,7 +46,7 @@ namespace PlayerDB
 						dataBase.DeletePlayer();
 						break;
 					case commandShowDataBase:
-						dataBase.ShowDB();
+						dataBase.ShowDataBase();
 						break;
 					case commandBanStatus:
 						dataBase.ChangeBanStatus();
@@ -71,7 +71,7 @@ namespace PlayerDB
 
 		public void AddPlayer()
 		{
-			int id = _players.Count(); 
+			int id = _players.Count();
 			int level;
 
 			Console.WriteLine("Введите имя персонажа");
@@ -92,7 +92,7 @@ namespace PlayerDB
 
 			if (_players.Count()>1)
 			{
-				player.Id = _players[_players.IndexOf(_players.Last())-1].Id+1; 
+				player.Id = _players[_players.IndexOf(_players.Last())-1].Id+1;
 			}
 			if (_players.Count()==1)
 			{
@@ -132,7 +132,7 @@ namespace PlayerDB
 			}
 		}
 
-		public void ShowDB()
+		public void ShowDataBase()
 		{
 			foreach (var player in _players)
 			{
@@ -168,6 +168,11 @@ namespace PlayerDB
 
 	public class Player
 	{
+		public int Id;
+		public string Name;
+		public int Level;
+		public bool Banned;
+
 		public Player(int id, string name, int level, bool banned)
 		{
 			Id=id;
@@ -179,11 +184,6 @@ namespace PlayerDB
 		{
 
 		}
-		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! get set бессмыслица
-		public int Id { get; set; }
-		public string Name { get; set; }
-		public int Level { get; set; }
-		public bool Banned { get; set; }
 
 		public void ShowInfo()
 		{
@@ -193,5 +193,4 @@ namespace PlayerDB
 				$"Игрок забанен? {Banned}\n ");
 		}
 	}
-
 }
