@@ -71,7 +71,7 @@ namespace PlayerDB
 
 		public void AddPlayer()
 		{
-			int id = _players.Count(); // БЛЯАААААААААААААААААА
+			int id = _players.Count(); 
 			int level;
 
 			Console.WriteLine("Введите имя персонажа");
@@ -90,12 +90,19 @@ namespace PlayerDB
 
 			_players.Add(player);
 
-			bool noDoubledIdFlag = false;
+			if (_players.Count()>1)
+			{
+				player.Id = _players[_players.IndexOf(_players.Last())-1].Id+1; 
+			}
+			if (_players.Count()==1)
+			{
+				player.Id = _players[_players.IndexOf(_players.Last())].Id+1;
+			}
 		}
 
 		public void DeletePlayer()
 		{
-			if(TryGetPlayer(out _player))
+			if (TryGetPlayer(out _player))
 			{
 				_players.Remove(_player);
 			}
