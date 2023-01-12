@@ -5,6 +5,7 @@
 //Создание самой БД не требуется, задание выполняется инструментами, которые вы уже изучили 
 //в рамках курса. Но нужен класс, который содержит игроков и её можно назвать "База данных". 
 
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection.Emit;
 using System.Xml.Linq;
@@ -16,34 +17,40 @@ namespace PlayerDB
 		static void Main(string[] args)
 		{
 			Player player = new Player();
-			DataBase db = new DataBase();
+			DataBase dataBase = new DataBase();
 
-			string choice;
+			const string commandAddPlayer = "1";
+			const string commandShowDataBase = "3";
+			const string commandDeletePlayer = "2";
+			const string commandBanStatus = "4";
+			const string commandPlayerInfo = "5";
+			const string commandExit = "exit";
 
-			while (Console.ReadKey().Key!=ConsoleKey.Spacebar)
+			while (Console.ReadLine()!=commandExit)
 			{
 				Console.WriteLine(" 1 - Добавить игрока\n " +
 					"2 - удалить игрока\n " +
 					"3 - показать игроков\n " +
 					"4 - забанить/разбанить игрока по id\n " +
-					"5 - Информация об игроке \n Для выхода нажмите Space");
+					"5 - Информация об игроке \n Для выхода введите exit");
+				string command = Console.ReadLine();
 
-				switch (choice = Console.ReadLine())
+				switch (command)
 				{
-					case "1":
-						db.AddPlayer();
+					case commandAddPlayer:
+						dataBase.AddPlayer();
 						break;
-					case "2":
-						db.DeletePlayer();
+					case commandDeletePlayer:
+						dataBase.DeletePlayer();
 						break;
-					case "3":
-						db.ShowDB();
+					case commandShowDataBase:
+						dataBase.ShowDB();
 						break;
-					case "4":
-						db.ChangeBanStatus();
+					case commandBanStatus:
+						dataBase.ChangeBanStatus();
 						break;
-					case "5":
-						db.PlayerInfo();
+					case commandPlayerInfo:
+						dataBase.PlayerInfo();
 						break;
 					default:
 						break;
@@ -57,33 +64,46 @@ namespace PlayerDB
 
 	public class DataBase
 	{
-		List<Player> players = new List<Player>();
+		private List<Player> _players = new List<Player>();
 
 		public void AddPlayer()
 		{
-			int id = players.Count();
+			int id = _players.Count();
+			int level;
 
 			Console.WriteLine("Введите имя персонажа");
 			string name = Console.ReadLine();
 
 			Console.WriteLine("Введите уровень персонажа");
-			int lvl = Convert.ToInt32(Console.ReadLine());
+			bool tryReadLevel = int.TryParse(Console.ReadLine(), out level);
 
-			Player player = new Player { Id = id, Name = name, Lvl = lvl };
+			while (tryReadLevel==false)
+			{
+				Console.WriteLine("Ошибка! Введите уровень персонажа ОДНИМ ЧИСЛОМ");
+				tryReadLevel = int.TryParse(Console.ReadLine(), out level);
+			}
 
-			players.Add(player);
+			Player player = new Player { Id = id, Name = name, Level = level };
+
+			_players.Add(player);
+
+			bool noDoubledIdFlag = false;
+
+
+
 		}
 
 		public void DeletePlayer()
 		{
+			int id;
 			Console.WriteLine("Введите id игрока");
-			int id = Convert.ToInt32(Console.ReadLine());
+			bool tryReadId = int.TryParse(Console.ReadLine(), out id);
 
-			foreach (var item in players)
+			foreach (var item in _players)
 			{
 				if (item.Id==id)
 				{
-					players.Remove(item);
+					_players.Remove(item);
 					break;
 				}
 			}
@@ -91,10 +111,11 @@ namespace PlayerDB
 
 		public void ChangeBanStatus()
 		{
+			int id;
 			Console.WriteLine("Введите id игрока для бана/разбана");
-			int id = Convert.ToInt32(Console.ReadLine());
+			bool tryReadId = int.TryParse(Console.ReadLine(), out id);
 
-			foreach (var item in players)
+			foreach (var item in _players)
 			{
 				if (item.Id==id)
 				{
@@ -113,40 +134,69 @@ namespace PlayerDB
 
 		public void PlayerInfo()
 		{
+			int id;
 			Console.WriteLine("Введите id игрока информацию о котором хотите узнать");
-			int id = Convert.ToInt32(Console.ReadLine());
+			bool tryReadId = int.TryParse(Console.ReadLine(), out id);
 
-			foreach (var item in players)
+			foreach (var player in _players)
 			{
-				if (item.Id==id)
+				if (player.Id==id)
 				{
-					item.ShowInfo();
+					player.ShowInfo();
 				}
 			}
 		}
 
 		public void ShowDB()
 		{
-			foreach (var item in players)
+
+			foreach (var player in _players)
 			{
-				item.ShowInfo();
+				player.ShowInfo();
 			}
 		}
-	}
 
-	public class Player
-	{
-		public int Id { get; set; }
-		public string Name { get; set; }
-		public int Lvl { get; set; }
-		public bool Banned { get; set; }
-
-		public void ShowInfo()
+		public bool TryGetPlayer(int id, out Player player)
 		{
-			Console.WriteLine($"Имя игрока: {Name}\n	" +
-				$"Id: {Id}\n	" +
-				$"Уровень: {Lvl}\n	" +
-				$"Игрок забанен? {Banned}\n ");
+			for (int i = 0; i < _players.Count; i++)
+			{
+				if (id == _players[i].Id)
+				{
+					player = _players[i];
+					return true;
+				}
+			}
+			player = null;
+			return false;
 		}
 	}
+
+		public class Player
+		{
+			public Player(int id, string name, int level, bool banned)
+			{
+				Id=id;
+				Name=name;
+				Level=level;
+				Banned=banned;
+			}
+			public Player()
+			{
+
+			}
+		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! get set бессмыслица
+			public int Id { get; set; }
+			public string Name { get; set; }
+			public int Level { get; set; }
+			public bool Banned { get; set; }
+
+			public void ShowInfo()
+			{
+				Console.WriteLine($"Имя игрока: {Name}\n	" +
+					$"Id: {Id}\n	" +
+					$"Уровень: {Level}\n	" +
+					$"Игрок забанен? {Banned}\n ");
+			}
+		}
+	
 }
