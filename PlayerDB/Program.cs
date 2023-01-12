@@ -28,11 +28,13 @@ namespace PlayerDB
 
 			while (Console.ReadLine()!=commandExit)
 			{
-				Console.WriteLine(" 1 - Добавить игрока\n " +
+				Console.WriteLine(
+					"1 - Добавить игрока\n " +
 					"2 - удалить игрока\n " +
 					"3 - показать игроков\n " +
 					"4 - забанить/разбанить игрока по id\n " +
-					"5 - Информация об игроке \n Для выхода введите exit");
+					"5 - Информация об игроке \n Для выхода введите exit"
+					);
 				string command = Console.ReadLine();
 
 				switch (command)
@@ -65,10 +67,11 @@ namespace PlayerDB
 	public class DataBase
 	{
 		private List<Player> _players = new List<Player>();
+		private Player _player;
 
 		public void AddPlayer()
 		{
-			int id = _players.Count();
+			int id = _players.Count(); // БЛЯАААААААААААААААААА
 			int level;
 
 			Console.WriteLine("Введите имя персонажа");
@@ -88,76 +91,60 @@ namespace PlayerDB
 			_players.Add(player);
 
 			bool noDoubledIdFlag = false;
-
-
-
 		}
 
 		public void DeletePlayer()
 		{
-			int id;
-			Console.WriteLine("Введите id игрока");
-			bool tryReadId = int.TryParse(Console.ReadLine(), out id);
-
-			foreach (var item in _players)
+			if(TryGetPlayer(out _player))
 			{
-				if (item.Id==id)
-				{
-					_players.Remove(item);
-					break;
-				}
+				_players.Remove(_player);
 			}
 		}
 
 		public void ChangeBanStatus()
 		{
-			int id;
-			Console.WriteLine("Введите id игрока для бана/разбана");
-			bool tryReadId = int.TryParse(Console.ReadLine(), out id);
-
-			foreach (var item in _players)
+			if (TryGetPlayer(out _player))
 			{
-				if (item.Id==id)
+				_player.Banned = !_player.Banned;
+				if (_player.Banned)
 				{
-					item.Banned = !item.Banned;
-					if (item.Banned)
-					{
-						Console.WriteLine("Игрок забанен");
-					}
-					else
-					{
-						Console.WriteLine("Игрок разбанен");
-					}
+					Console.WriteLine("Игрок забанен");
+				}
+				else
+				{
+					Console.WriteLine("Игрок разбанен");
 				}
 			}
 		}
 
 		public void PlayerInfo()
 		{
-			int id;
-			Console.WriteLine("Введите id игрока информацию о котором хотите узнать");
-			bool tryReadId = int.TryParse(Console.ReadLine(), out id);
-
-			foreach (var player in _players)
+			if (TryGetPlayer(out _player))
 			{
-				if (player.Id==id)
-				{
-					player.ShowInfo();
-				}
+				_player.ShowInfo();
 			}
 		}
 
 		public void ShowDB()
 		{
-
 			foreach (var player in _players)
 			{
 				player.ShowInfo();
 			}
 		}
 
-		public bool TryGetPlayer(int id, out Player player)
+		private bool TryGetPlayer(out Player player)
 		{
+			int id;
+			Console.WriteLine("Введите id игрока");
+			bool tryReadId = int.TryParse(Console.ReadLine(), out id);
+
+			while (tryReadId==false)
+			{
+				Console.WriteLine("Ошибка! Введите id персонажа ОДНИМ ЧИСЛОМ");
+				tryReadId = int.TryParse(Console.ReadLine(), out id);
+			}
+
 			for (int i = 0; i < _players.Count; i++)
 			{
 				if (id == _players[i].Id)
@@ -167,36 +154,37 @@ namespace PlayerDB
 				}
 			}
 			player = null;
+			Console.WriteLine("Такого игрока нет");
 			return false;
 		}
 	}
 
-		public class Player
+	public class Player
+	{
+		public Player(int id, string name, int level, bool banned)
 		{
-			public Player(int id, string name, int level, bool banned)
-			{
-				Id=id;
-				Name=name;
-				Level=level;
-				Banned=banned;
-			}
-			public Player()
-			{
-
-			}
-		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! get set бессмыслица
-			public int Id { get; set; }
-			public string Name { get; set; }
-			public int Level { get; set; }
-			public bool Banned { get; set; }
-
-			public void ShowInfo()
-			{
-				Console.WriteLine($"Имя игрока: {Name}\n	" +
-					$"Id: {Id}\n	" +
-					$"Уровень: {Level}\n	" +
-					$"Игрок забанен? {Banned}\n ");
-			}
+			Id=id;
+			Name=name;
+			Level=level;
+			Banned=banned;
 		}
-	
+		public Player()
+		{
+
+		}
+		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! get set бессмыслица
+		public int Id { get; set; }
+		public string Name { get; set; }
+		public int Level { get; set; }
+		public bool Banned { get; set; }
+
+		public void ShowInfo()
+		{
+			Console.WriteLine($"Имя игрока: {Name}\n	" +
+				$"Id: {Id}\n	" +
+				$"Уровень: {Level}\n	" +
+				$"Игрок забанен? {Banned}\n ");
+		}
+	}
+
 }
