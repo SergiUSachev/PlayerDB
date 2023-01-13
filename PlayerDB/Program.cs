@@ -8,6 +8,7 @@
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection.Emit;
+using System.Security.Cryptography.X509Certificates;
 using System.Xml.Linq;
 
 namespace PlayerDB
@@ -16,43 +17,43 @@ namespace PlayerDB
 	{
 		static void Main(string[] args)
 		{
-			Player player = new Player();
 			DataBase dataBase = new DataBase();
 
-			const string commandAddPlayer = "1";
-			const string commandShowDataBase = "3";
-			const string commandDeletePlayer = "2";
-			const string commandBanStatus = "4";
-			const string commandPlayerInfo = "5";
-			const string commandExit = "exit";
+			const string CommandAddPlayer = "1";
+			const string CommandShowDataBase = "3";
+			const string CommandDeletePlayer = "2";
+			const string CommandBanStatus = "4";
+			const string CommandPlayerInfo = "5";
+			const string CommandExit = "exit";
 
-			while (Console.ReadLine()!=commandExit)
+			while (Console.ReadLine()!=CommandExit)
 			{
 				Console.WriteLine(
-					"1 - Добавить игрока\n " +
-					"2 - удалить игрока\n " +
-					"3 - показать игроков\n " +
-					"4 - забанить/разбанить игрока по id\n " +
-					"5 - Информация об игроке \n Для выхода введите exit"
+					$"{CommandAddPlayer} - Добавить игрока\n " +
+					$"{CommandShowDataBase} - удалить игрока\n " +
+					$"{CommandDeletePlayer} - показать игроков\n " +
+					$"{CommandBanStatus} - забанить/разбанить игрока по id\n " +
+					$"{CommandPlayerInfo} - Информация об игроке \n Для выхода введите {CommandExit}"
 					);
+
 				string command = Console.ReadLine();
 
 				switch (command)
 				{
-					case commandAddPlayer:
+					case CommandAddPlayer:
 						dataBase.AddPlayer();
 						break;
-					case commandDeletePlayer:
+					case CommandDeletePlayer:
 						dataBase.DeletePlayer();
 						break;
-					case commandShowDataBase:
-						dataBase.ShowDataBase();
+					case CommandShowDataBase:
+						dataBase.ShowAllPlayersInfo();
 						break;
-					case commandBanStatus:
+					case CommandBanStatus:
 						dataBase.ChangeBanStatus();
 						break;
-					case commandPlayerInfo:
-						dataBase.PlayerInfo();
+					case CommandPlayerInfo:
+						dataBase.ShowPlayerInfo();
 						break;
 					default:
 						break;
@@ -67,7 +68,6 @@ namespace PlayerDB
 	public class DataBase
 	{
 		private List<Player> _players = new List<Player>();
-		private Player _player;
 
 		public void AddPlayer()
 		{
@@ -87,13 +87,13 @@ namespace PlayerDB
 			}
 
 			Player player = new Player { Id = id, Name = name, Level = level };
-
 			_players.Add(player);
 
 			if (_players.Count()>1)
 			{
 				player.Id = _players[_players.IndexOf(_players.Last())-1].Id+1;
 			}
+
 			if (_players.Count()==1)
 			{
 				player.Id = _players[_players.IndexOf(_players.Last())].Id+1;
@@ -102,37 +102,62 @@ namespace PlayerDB
 
 		public void DeletePlayer()
 		{
-			if (TryGetPlayer(out _player))
+			Player player;
+			if (TryGetPlayer(out player))
 			{
-				_players.Remove(_player);
+				_players.Remove(player);
 			}
 		}
 
 		public void ChangeBanStatus()
 		{
-			if (TryGetPlayer(out _player))
+			Player player;
+			if (TryGetPlayer(out player))
 			{
-				_player.Banned = !_player.Banned;
-				if (_player.Banned)
+				if (player.IsBanned)
 				{
-					Console.WriteLine("Игрок забанен");
+					UnBanPlayer();
+					Console.WriteLine("Игрок разбанен");
 				}
 				else
 				{
-					Console.WriteLine("Игрок разбанен");
+					BanPlayer();
+					Console.WriteLine("Игрок забанен");
 				}
 			}
 		}
 
-		public void PlayerInfo()
+		public void BanPlayer()
 		{
-			if (TryGetPlayer(out _player))
+			Player player;
+
+			if (TryGetPlayer(out player))
 			{
-				_player.ShowInfo();
+				player.IsBanned = true;
 			}
 		}
 
-		public void ShowDataBase()
+		public void UnBanPlayer()
+		{
+			Player player;
+
+			if (TryGetPlayer(out player))
+			{
+				player.IsBanned = false;
+			}
+		}
+
+		public void ShowPlayerInfo()
+		{
+			Player player;
+
+			if (TryGetPlayer(out player))
+			{
+				player.ShowInfo();
+			}
+		}
+
+		public void ShowAllPlayersInfo()
 		{
 			foreach (var player in _players)
 			{
@@ -160,6 +185,7 @@ namespace PlayerDB
 					return true;
 				}
 			}
+
 			player = null;
 			Console.WriteLine("Такого игрока нет");
 			return false;
@@ -171,15 +197,16 @@ namespace PlayerDB
 		public int Id;
 		public string Name;
 		public int Level;
-		public bool Banned;
+		public bool IsBanned;
 
-		public Player(int id, string name, int level, bool banned)
+		public Player(int id, string name, int level, bool isBanned)
 		{
 			Id=id;
 			Name=name;
 			Level=level;
-			Banned=banned;
+			IsBanned=isBanned;
 		}
+
 		public Player()
 		{
 
@@ -190,7 +217,7 @@ namespace PlayerDB
 			Console.WriteLine($"Имя игрока: {Name}\n	" +
 				$"Id: {Id}\n	" +
 				$"Уровень: {Level}\n	" +
-				$"Игрок забанен? {Banned}\n ");
+				$"Игрок забанен? {IsBanned}\n ");
 		}
 	}
 }
