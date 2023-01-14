@@ -17,13 +17,14 @@ namespace PlayerDB
 	{
 		static void Main(string[] args)
 		{
-			Database dataBase = new Database();
+			Database database = new Database();
 
 			const string CommandAddPlayer = "1";
 			const string CommandDeletePlayer = "2";
 			const string CommandShowDataBase = "3";
-			const string CommandBanStatus = "4";
-			const string CommandPlayerInfo = "5";
+			const string CommandBan = "4";
+			const string CommandUnban = "5";
+			const string CommandPlayerInfo = "6";
 			const string CommandExit = "exit";
 
 			bool isCommandExit = false;
@@ -34,7 +35,8 @@ namespace PlayerDB
 					$"{CommandAddPlayer} - Добавить игрока\n" +
 					$"{CommandDeletePlayer} - удалить игрока\n" +
 					$"{CommandShowDataBase} - показать игроков\n" +
-					$"{CommandBanStatus} - забанить/разбанить игрока по id\n" +
+					$"{CommandBan} - забанить игрока по id\n" +
+					$"{CommandUnban} - разбанить игрока по id\n" +
 					$"{CommandPlayerInfo} - Информация об игроке \nДля выхода введите {CommandExit}\n" +
 					$"Введите номер команды и нажмите Enter"
 					);
@@ -44,23 +46,27 @@ namespace PlayerDB
 				switch (command)
 				{
 					case CommandAddPlayer:
-						dataBase.AddPlayer();
+						database.AddPlayer();
 						break;
 
 					case CommandDeletePlayer:
-						dataBase.DeletePlayer();
+						database.DeletePlayer();
 						break;
 
 					case CommandShowDataBase:
-						dataBase.ShowAllPlayersInfo();
+						database.ShowAllPlayersInfo();
 						break;
 
-					case CommandBanStatus:
-						dataBase.ChangeBanStatus();
+					case CommandUnban:
+						database.UnbanPlayer();
 						break;
 
 					case CommandPlayerInfo:
-						dataBase.ShowPlayerInfo();
+						database.ShowPlayerInfo();
+						break;
+
+					case CommandBan:
+						database.BanPlayer();
 						break;
 
 					case CommandExit:
@@ -86,7 +92,7 @@ namespace PlayerDB
 
 		public void AddPlayer()
 		{
-			int id = _lastId + 1;
+			int id = _lastId++;
 			_lastId = id;
 			int level;
 
@@ -113,24 +119,6 @@ namespace PlayerDB
 			{
 				_players.Remove(player);
 				Console.WriteLine("Игрок удалён");
-			}
-		}
-
-		public void ChangeBanStatus()
-		{
-			Player player;
-			if (TryGetPlayer(out player))
-			{
-				if (player.IsBanned)
-				{
-					UnbanPlayer();
-					Console.WriteLine("Игрок разбанен");
-				}
-				else
-				{
-					BanPlayer();
-					Console.WriteLine("Игрок забанен");
-				}
 			}
 		}
 
