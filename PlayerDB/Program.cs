@@ -17,23 +17,26 @@ namespace PlayerDB
 	{
 		static void Main(string[] args)
 		{
-			DataBase dataBase = new DataBase();
+			Database dataBase = new Database();
 
 			const string CommandAddPlayer = "1";
-			const string CommandShowDataBase = "3";
 			const string CommandDeletePlayer = "2";
+			const string CommandShowDataBase = "3";
 			const string CommandBanStatus = "4";
 			const string CommandPlayerInfo = "5";
 			const string CommandExit = "exit";
 
-			while (Console.ReadLine()!=CommandExit)
+			bool isCommandExit =false;
+
+			while (isCommandExit==false)
 			{
 				Console.WriteLine(
-					$"{CommandAddPlayer} - Добавить игрока\n " +
-					$"{CommandShowDataBase} - удалить игрока\n " +
-					$"{CommandDeletePlayer} - показать игроков\n " +
-					$"{CommandBanStatus} - забанить/разбанить игрока по id\n " +
-					$"{CommandPlayerInfo} - Информация об игроке \n Для выхода введите {CommandExit}"
+					$"{CommandAddPlayer} - Добавить игрока\n" +
+					$"{CommandDeletePlayer} - удалить игрока\n" +
+					$"{CommandShowDataBase} - показать игроков\n" +
+					$"{CommandBanStatus} - забанить/разбанить игрока по id\n" +
+					$"{CommandPlayerInfo} - Информация об игроке \nДля выхода введите {CommandExit}\n" +
+					$"Введите номер команды и нажмите Enter"
 					);
 
 				string command = Console.ReadLine();
@@ -43,35 +46,48 @@ namespace PlayerDB
 					case CommandAddPlayer:
 						dataBase.AddPlayer();
 						break;
+
 					case CommandDeletePlayer:
 						dataBase.DeletePlayer();
 						break;
+
 					case CommandShowDataBase:
 						dataBase.ShowAllPlayersInfo();
 						break;
+
 					case CommandBanStatus:
 						dataBase.ChangeBanStatus();
 						break;
+
 					case CommandPlayerInfo:
 						dataBase.ShowPlayerInfo();
 						break;
+
+					case CommandExit:
+						isCommandExit = true;
+						break;
+
 					default:
+						Console.WriteLine("Ошибка ввода команды");
 						break;
 				}
 
+				Console.WriteLine("Нажмите любую кнопку для продолжения");
 				Console.ReadKey();
 				Console.Clear();
 			}
 		}
 	}
 
-	public class DataBase
+	class Database
 	{
 		private List<Player> _players = new List<Player>();
+		private int _lastId;
 
 		public void AddPlayer()
 		{
-			int id = _players.Count();
+			int id = _lastId + 1;
+			_lastId = id;
 			int level;
 
 			Console.WriteLine("Введите имя персонажа");
@@ -88,16 +104,6 @@ namespace PlayerDB
 
 			Player player = new Player { Id = id, Name = name, Level = level };
 			_players.Add(player);
-
-			if (_players.Count()>1)
-			{
-				player.Id = _players[_players.IndexOf(_players.Last())-1].Id+1;
-			}
-
-			if (_players.Count()==1)
-			{
-				player.Id = _players[_players.IndexOf(_players.Last())].Id+1;
-			}
 		}
 
 		public void DeletePlayer()
@@ -106,6 +112,7 @@ namespace PlayerDB
 			if (TryGetPlayer(out player))
 			{
 				_players.Remove(player);
+				Console.WriteLine("Игрок удалён");
 			}
 		}
 
@@ -116,7 +123,7 @@ namespace PlayerDB
 			{
 				if (player.IsBanned)
 				{
-					UnBanPlayer();
+					UnbanPlayer();
 					Console.WriteLine("Игрок разбанен");
 				}
 				else
@@ -137,7 +144,7 @@ namespace PlayerDB
 			}
 		}
 
-		public void UnBanPlayer()
+		public void UnbanPlayer()
 		{
 			Player player;
 
@@ -186,13 +193,13 @@ namespace PlayerDB
 				}
 			}
 
-			player = null;
 			Console.WriteLine("Такого игрока нет");
+			player = null;
 			return false;
 		}
 	}
 
-	public class Player
+	class Player
 	{
 		public int Id;
 		public string Name;
