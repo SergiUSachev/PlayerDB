@@ -100,7 +100,7 @@ namespace PlayerDB
 			string name = Console.ReadLine();
 
 			level = GetLevel();
-			
+
 			Player player = new Player { Id = id, Name = name, Level = level };
 			_players.Add(player);
 		}
@@ -108,14 +108,14 @@ namespace PlayerDB
 		private int GetLevel()
 		{
 			int level = 0;
-			bool tryReadLevel=false;
+			bool isLevelReadable = false;
 
-			while (tryReadLevel==false)
+			while (isLevelReadable==false)
 			{
 				Console.WriteLine("Введите уровень персонажа ОДНИМ ЧИСЛОМ");
-				tryReadLevel = int.TryParse(Console.ReadLine(), out level);
+				isLevelReadable = int.TryParse(Console.ReadLine(), out level);
 			}
-			
+
 			return level;
 		}
 
