@@ -99,17 +99,26 @@ namespace PlayerDB
 			Console.WriteLine("Введите имя персонажа");
 			string name = Console.ReadLine();
 
-			Console.WriteLine("Введите уровень персонажа");
-			bool tryReadLevel = int.TryParse(Console.ReadLine(), out level);
+			level = GetLevel();
+			
+			Player player = new Player { Id = id, Name = name, Level = level };
+			_players.Add(player);
+		}
+
+		private int GetLevel()
+		{
+			int level;
+			bool tryReadLevel;
+
+			Console.WriteLine("Введите уровень персонажа ОДНИМ ЧИСЛОМ");
+			tryReadLevel = int.TryParse(Console.ReadLine(), out level);
 
 			while (tryReadLevel==false)
 			{
-				Console.WriteLine("Ошибка! Введите уровень персонажа ОДНИМ ЧИСЛОМ");
 				tryReadLevel = int.TryParse(Console.ReadLine(), out level);
 			}
-
-			Player player = new Player { Id = id, Name = name, Level = level };
-			_players.Add(player);
+			
+			return level;
 		}
 
 		public void DeletePlayer()
