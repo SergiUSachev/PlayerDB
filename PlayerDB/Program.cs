@@ -107,14 +107,12 @@ namespace PlayerDB
 
 		private int GetLevel()
 		{
-			int level;
-			bool tryReadLevel;
-
-			Console.WriteLine("Введите уровень персонажа ОДНИМ ЧИСЛОМ");
-			tryReadLevel = int.TryParse(Console.ReadLine(), out level);
+			int level = 0;
+			bool tryReadLevel=false;
 
 			while (tryReadLevel==false)
 			{
+				Console.WriteLine("Введите уровень персонажа ОДНИМ ЧИСЛОМ");
 				tryReadLevel = int.TryParse(Console.ReadLine(), out level);
 			}
 			
