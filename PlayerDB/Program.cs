@@ -37,7 +37,7 @@ namespace PlayerDB
 					$"{CommandShowDataBase} - показать игроков\n" +
 					$"{CommandBan} - забанить игрока по id\n" +
 					$"{CommandUnban} - разбанить игрока по id\n" +
-					$"{CommandPlayerInfo} - информация об игроке \nДля выхода введите {CommandExit}\n" +
+					$"{CommandPlayerInfo} - информация об игроке \nдля выхода введите {CommandExit}\n" +
 					$"Введите номер команды и нажмите Enter"
 					);
 
