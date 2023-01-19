@@ -32,12 +32,12 @@ namespace PlayerDB
 			while (isCommandExit==false)
 			{
 				Console.WriteLine(
-					$"{CommandAddPlayer} - Добавить игрока\n" +
+					$"{CommandAddPlayer} - добавить игрока\n" +
 					$"{CommandDeletePlayer} - удалить игрока\n" +
 					$"{CommandShowDataBase} - показать игроков\n" +
 					$"{CommandBan} - забанить игрока по id\n" +
 					$"{CommandUnban} - разбанить игрока по id\n" +
-					$"{CommandPlayerInfo} - Информация об игроке \nДля выхода введите {CommandExit}\n" +
+					$"{CommandPlayerInfo} - информация об игроке \nДля выхода введите {CommandExit}\n" +
 					$"Введите номер команды и нажмите Enter"
 					);
 
