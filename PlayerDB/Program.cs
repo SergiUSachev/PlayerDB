@@ -17,8 +17,6 @@ namespace PlayerDB
 	{
 		static void Main(string[] args)
 		{
-			Database database = new Database();
-
 			const string CommandAddPlayer = "1";
 			const string CommandDeletePlayer = "2";
 			const string CommandShowDataBase = "3";
@@ -26,6 +24,8 @@ namespace PlayerDB
 			const string CommandUnban = "5";
 			const string CommandPlayerInfo = "6";
 			const string CommandExit = "exit";
+
+			Database database = new Database();
 
 			bool isCommandExit = false;
 
@@ -90,6 +90,32 @@ namespace PlayerDB
 		private List<Player> _players = new List<Player>();
 		private int _lastId;
 
+		private bool TryGetPlayer(out Player player)
+		{
+			int id;
+			Console.WriteLine("Введите id игрока");
+			bool tryReadId = int.TryParse(Console.ReadLine(), out id);
+
+			while (tryReadId==false)
+			{
+				Console.WriteLine("Ошибка! Введите id персонажа ОДНИМ ЧИСЛОМ");
+				tryReadId = int.TryParse(Console.ReadLine(), out id);
+			}
+
+			for (int i = 0; i < _players.Count; i++)
+			{
+				if (id == _players[i].Id)
+				{
+					player = _players[i];
+					return true;
+				}
+			}
+
+			Console.WriteLine("Такого игрока нет");
+			player = null;
+			return false;
+		}
+
 		public void AddPlayer()
 		{
 			int id = _lastId++;
@@ -112,8 +138,13 @@ namespace PlayerDB
 
 			while (isLevelReadable==false)
 			{
-				Console.WriteLine("Введите уровень персонажа ОДНИМ ЧИСЛОМ");
+				Console.WriteLine("Введите уровень персонажа ОДНИМ ПОЛОЖИТЕЛЬНЫМ ЧИСЛОМ");
 				isLevelReadable = int.TryParse(Console.ReadLine(), out level);
+
+				if (level<0)
+				{
+					isLevelReadable = false;
+				}
 			}
 
 			return level;
@@ -165,32 +196,6 @@ namespace PlayerDB
 			{
 				player.ShowInfo();
 			}
-		}
-
-		private bool TryGetPlayer(out Player player)
-		{
-			int id;
-			Console.WriteLine("Введите id игрока");
-			bool tryReadId = int.TryParse(Console.ReadLine(), out id);
-
-			while (tryReadId==false)
-			{
-				Console.WriteLine("Ошибка! Введите id персонажа ОДНИМ ЧИСЛОМ");
-				tryReadId = int.TryParse(Console.ReadLine(), out id);
-			}
-
-			for (int i = 0; i < _players.Count; i++)
-			{
-				if (id == _players[i].Id)
-				{
-					player = _players[i];
-					return true;
-				}
-			}
-
-			Console.WriteLine("Такого игрока нет");
-			player = null;
-			return false;
 		}
 	}
 
