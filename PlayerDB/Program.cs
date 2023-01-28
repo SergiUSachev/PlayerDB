@@ -116,21 +116,6 @@ namespace PlayerDB
 			return false;
 		}
 
-		public void AddPlayer()
-		{
-			int id = _lastId++;
-			_lastId = id;
-			int level;
-
-			Console.WriteLine("Введите имя персонажа");
-			string name = Console.ReadLine();
-
-			level = GetLevel();
-
-			Player player = new Player { Id = id, Name = name, Level = level };
-			_players.Add(player);
-		}
-
 		private int GetLevel()
 		{
 			int level = 0;
@@ -150,10 +135,24 @@ namespace PlayerDB
 			return level;
 		}
 
+		public void AddPlayer()
+		{
+			int id = _lastId++;
+			_lastId = id;
+			int level;
+
+			Console.WriteLine("Введите имя персонажа");
+			string name = Console.ReadLine();
+
+			level = GetLevel();
+
+			Player player = new Player { Id = id, Name = name, Level = level };
+			_players.Add(player);
+		}
+
 		public void DeletePlayer()
 		{
-			Player player;
-			if (TryGetPlayer(out player))
+			if (TryGetPlayer(out Player player))
 			{
 				_players.Remove(player);
 				Console.WriteLine("Игрок удалён");
@@ -162,9 +161,7 @@ namespace PlayerDB
 
 		public void BanPlayer()
 		{
-			Player player;
-
-			if (TryGetPlayer(out player))
+			if (TryGetPlayer(out Player player))
 			{
 				player.IsBanned = true;
 			}
@@ -172,9 +169,7 @@ namespace PlayerDB
 
 		public void UnbanPlayer()
 		{
-			Player player;
-
-			if (TryGetPlayer(out player))
+			if (TryGetPlayer(out Player player))
 			{
 				player.IsBanned = false;
 			}
@@ -182,9 +177,7 @@ namespace PlayerDB
 
 		public void ShowPlayerInfo()
 		{
-			Player player;
-
-			if (TryGetPlayer(out player))
+			if (TryGetPlayer(out Player player))
 			{
 				player.ShowInfo();
 			}
