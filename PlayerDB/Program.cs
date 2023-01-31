@@ -104,7 +104,7 @@ namespace PlayerDB
 
 			for (int i = 0; i < _players.Count; i++)
 			{
-				if (id == _players[i].GetId())
+				if (id == _players[i].Id)
 				{
 					player = _players[i];
 					return true;
@@ -139,7 +139,6 @@ namespace PlayerDB
 		{
 			Player player = new Player();
 			int id = _lastId++;
-			_lastId = _lastId++;
 			int level;
 
 			Console.WriteLine("Введите имя персонажа");
@@ -167,8 +166,7 @@ namespace PlayerDB
 		{
 			if (TryGetPlayer(out Player player))
 			{
-				bool isBan = true;
-				player.SetBanStatus(isBan);
+				player.BanPlayer();
 			}
 		}
 
@@ -176,8 +174,7 @@ namespace PlayerDB
 		{
 			if (TryGetPlayer(out Player player))
 			{
-				bool isBan = false;
-				player.SetBanStatus(isBan);
+				player.UnbanPlayer();
 			}
 		}
 
@@ -200,7 +197,6 @@ namespace PlayerDB
 
 	class Player
 	{
-		private int Id;
 		private string Name;
 		private int Level;
 		private bool IsBanned;
@@ -218,14 +214,11 @@ namespace PlayerDB
 
 		}
 
+		public int Id { get; private set; }
+
 		public void SetId(int id)
 		{
 			Id = id;
-		}
-
-		public int GetId()
-		{
-			return Id;
 		}
 
 		public void SetName(string name)
@@ -238,9 +231,14 @@ namespace PlayerDB
 			Level = level;
 		}
 
-		public void SetBanStatus(bool isBan)
+		public void BanPlayer()
 		{
-			IsBanned = isBan;
+			IsBanned = true;
+		}
+
+		public void UnbanPlayer()
+		{
+			IsBanned = false;
 		}
 
 		public void ShowInfo()
