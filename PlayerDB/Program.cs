@@ -118,7 +118,7 @@ namespace PlayerDB
 		{
 			if (TryGetPlayer(out Player player))
 			{
-				player.BanPlayer();
+				player.Ban();
 			}
 		}
 
@@ -126,7 +126,7 @@ namespace PlayerDB
 		{
 			if (TryGetPlayer(out Player player))
 			{
-				player.UnbanPlayer();
+				player.Unban();
 			}
 		}
 
@@ -148,21 +148,19 @@ namespace PlayerDB
 
 		private bool TryGetPlayer(out Player player)
 		{
-			int id;
 			Console.WriteLine("Введите id игрока");
-			bool tryReadId = int.TryParse(Console.ReadLine(), out id);
+			int currentId;
 
-			while (tryReadId==false)
+			while (!int.TryParse(Console.ReadLine(), out currentId))
 			{
-				Console.WriteLine("Ошибка! Введите id персонажа ОДНИМ ЧИСЛОМ");
-				tryReadId = int.TryParse(Console.ReadLine(), out id);
+				Console.WriteLine("Введите id персонажа ОДНИМ ЧИСЛОМ");
 			}
 
-			for (int i = 0; i < _players.Count; i++)
+			foreach (var currentPlayer in _players)
 			{
-				if (id == _players[i].Id)
+				if (currentPlayer.Id == currentId)
 				{
-					player = _players[i];
+					player = currentPlayer;
 					return true;
 				}
 			}
@@ -206,34 +204,14 @@ namespace PlayerDB
 			_isBanned=isBanned;
 		}
 
-		public Player()
-		{
-
-		}
-
 		public int Id { get; private set; }
 
-		public void SetId(int id)
-		{
-			Id = id;
-		}
-
-		public void SetName(string name)
-		{
-			_name = name;
-		}
-
-		public void SetLevel(int level)
-		{
-			_level = level;
-		}
-
-		public void BanPlayer()
+		public void Ban()
 		{
 			_isBanned = true;
 		}
 
-		public void UnbanPlayer()
+		public void Unban()
 		{
 			_isBanned = false;
 		}
