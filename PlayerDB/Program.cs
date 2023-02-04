@@ -5,12 +5,6 @@
 //Создание самой БД не требуется, задание выполняется инструментами, которые вы уже изучили 
 //в рамках курса. Но нужен класс, который содержит игроков и её можно назвать "База данных". 
 
-using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection.Emit;
-using System.Security.Cryptography.X509Certificates;
-using System.Xml.Linq;
-
 namespace PlayerDB
 {
 	internal class Program
@@ -151,7 +145,7 @@ namespace PlayerDB
 			Console.WriteLine("Введите id игрока");
 			int currentId;
 
-			while (!int.TryParse(Console.ReadLine(), out currentId))
+			while (int.TryParse(Console.ReadLine(), out currentId)==false)
 			{
 				Console.WriteLine("Введите id персонажа ОДНИМ ЧИСЛОМ");
 			}
